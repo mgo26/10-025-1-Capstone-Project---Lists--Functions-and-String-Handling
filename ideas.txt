@@ -1,0 +1,21 @@
+vm functionality
+
+Displaying all the tasks in a manner that is easy to read
+
+Find a way to access the task number for each task
+Give them a menu to allow them to select a task or exit out to the main menu
+
+display all the tasks with numbers for each
+add an extra bit of text at the bottom which reads 'enter -1 to return to the main menu
+
+Once the user selects a specific task
+    Asked if they want to mark it as complete or edit the task
+        If they want to mark it as complete then change no to yes
+        elif they want to edit it then allow them to edit it
+            check if the task has been completed already
+                if it has then it cannot be edited - throw them back to task selection
+                else allow them to edit it
+        else exit out back to the selection of tasks
+
+
+    
