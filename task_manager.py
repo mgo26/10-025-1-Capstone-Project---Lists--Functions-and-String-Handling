@@ -37,6 +37,10 @@ for t_str in task_data:
     task_list.append(curr_t)
 
 
+#---Variable declarations---
+
+selected_task = None
+
 #Functions
 
 #Function to register a new user
@@ -48,7 +52,7 @@ def reg_user():
             confirm_password = input("Confirm Password: ")
             while True:
                 #Check passwords match
-                if new_password != confirm_password:
+                if new_password == confirm_password:
                     #If they are then add them to the user.txt file
                     print("New user added")
                     username_password[new_username] = new_password
@@ -58,10 +62,12 @@ def reg_user():
                         for k in username_password:
                             user_data.append(f"{k};{username_password[k]}")
                         out_file.write("\n".join(user_data))
-                    
+                    break
                 #If passwords don't match print error message and return to menu
                 else:
                     print("Passwords do not match")
+                    break
+            break
         else:
             print("Please ensure you enter a new user")
             break
@@ -143,8 +149,11 @@ def view_mine():
            format of Output 2 presented in the task pdf (i.e. includes spacing
            and labelling)
         '''
+    #Counter added to the functionality of the task, allows user to select a task to edit
+    counter = 1
+    temp_user_task_list = []
+
     for t in task_list:
-        counter = 1
         if t['username'] == curr_user:
             disp_str = f"Task Number: \t {str(counter)}\n"
             counter += 1
@@ -154,11 +163,39 @@ def view_mine():
             disp_str += f"Due Date: \t {t['due_date'].strftime(DATETIME_STRING_FORMAT)}\n"
             disp_str += f"Task Description: \n {t['description']}\n"
             print(disp_str)
-    print("Please enter -1 to return to the main menu")
+            
+            temp_user_task_list.append(t)
+    
+
+    # #Check that the user selected a valid task
+    # while True:
+    #     user_choice = int(input("Please select a task to edit or select '-1' to return to the main menu: "))
+    #     if 1 <= user_choice <= len(temp_user_task_list):
+    #         selected_task = temp_user_task_list[user_choice-1]
+
+    #         #Editing the file
+    #         with open('tasks.txt', 'w+') as file:
+    #             task_complete = input("Is the task completed? (y/n): ")
+    #             if task_complete == "y":
+    #                 selected_task[5] = "Yes"
+    #             break
+    #     elif user_choice == -1:
+    #         break
+    #     else:
+    #         print("Please make a valid selection")
+    #         continue
+
+
 
 #Function to edit tasks
-def edit_tasks():
-    """Reads the task """
+# def edit_tasks():
+#     """Takes the task as a dictionary from .txt file ready to edit """
+
+#     task_complete = input("Is the task completed? (y/n): ")
+#     if task_complete == "y":
+#         selected_task[5] = True
+
+    
 
 #====Login Section====
 '''This code reads usernames and password from the user.txt file to 
@@ -218,20 +255,7 @@ e - Exit
 
     elif menu == 'va':
         view_all()
-        # '''Reads the task from task.txt file and prints to the console in the 
-        #    format of Output 2 presented in the task pdf (i.e. includes spacing
-        #    and labelling) 
-        # '''
-
-        # for t in task_list:
-        #     disp_str = f"Task: \t\t {t['title']}\n"
-        #     disp_str += f"Assigned to: \t {t['username']}\n"
-        #     disp_str += f"Date Assigned: \t {t['assigned_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-        #     disp_str += f"Due Date: \t {t['due_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-        #     disp_str += f"Task Description: \n {t['description']}\n"
-        #     print(disp_str)
             
-
 
     elif menu == 'vm':
         view_mine()
@@ -254,3 +278,5 @@ e - Exit
 
     else:
         print("You have made a wrong choice, Please Try again")
+
+
