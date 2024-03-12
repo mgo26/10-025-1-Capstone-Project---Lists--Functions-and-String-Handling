@@ -162,39 +162,126 @@ def view_mine():
             disp_str += f"Date Assigned: \t {t['assigned_date'].strftime(DATETIME_STRING_FORMAT)}\n"
             disp_str += f"Due Date: \t {t['due_date'].strftime(DATETIME_STRING_FORMAT)}\n"
             disp_str += f"Task Description: \n {t['description']}\n"
+            disp_str += f"Task completed: \n {t['completed']}\n"
             print(disp_str)
             
             temp_user_task_list.append(t)
     
 
-    # #Check that the user selected a valid task
-    # while True:
-    #     user_choice = int(input("Please select a task to edit or select '-1' to return to the main menu: "))
-    #     if 1 <= user_choice <= len(temp_user_task_list):
-    #         selected_task = temp_user_task_list[user_choice-1]
+    #Check that the user selected a valid task
+    while True:
+        user_choice = int(input("Please select a task to edit or select '-1' to return to the main menu: "))
+        if 1 <= user_choice <= len(temp_user_task_list):
+            selected_task = temp_user_task_list[user_choice-1]
 
-    #         #Editing the file
-    #         with open('tasks.txt', 'w+') as file:
-    #             task_complete = input("Is the task completed? (y/n): ")
-    #             if task_complete == "y":
-    #                 selected_task[5] = "Yes"
-    #             break
-    #     elif user_choice == -1:
-    #         break
-    #     else:
-    #         print("Please make a valid selection")
-    #         continue
+            #Asking if user wants to edit data
+            task_complete = input("Is the task completed? (y/n): ")
+            if task_complete == "y":
+                selected_task['completed'] = True
+            else:
+                selected_task['completed'] = False
+            
+            
+            #Asking if they want to edit the username
+            edit_user = input("Would you like to edit the user for this task?: (y/n): ")
+            if edit_user == "y":
+                edited_user = input("Please enter the new user you would like to assign this task to: ")
+                selected_task['username'] = edited_user
+            else:
+                break
+
+            #Asking user if they want to edit the due date
+            edit_due_date = input("Would you like to edit the due date for this task?: (y/n): ")
+            if edit_due_date == "y":
+                while True:
+                    try:
+                        task_due_date = input("Due date of task (YYYY-MM-DD): ")
+                        due_date_time = datetime.strptime(task_due_date, DATETIME_STRING_FORMAT)
+                        selected_task['due_date'] = due_date_time
+                        break
+
+                    except ValueError:
+                        print("Invalid datetime format. Please use the format specified")
+            
+            else:
+                break
+
+            #write data back to list
+            with open("tasks.txt", "w") as task_file:
+                task_list_to_write = []
+                for t in task_list:
+                    str_attrs = [
+                        t['username'],
+                        t['title'],
+                        t['description'],
+                        t['due_date'].strftime(DATETIME_STRING_FORMAT),
+                        t['assigned_date'].strftime(DATETIME_STRING_FORMAT),
+                        "Yes" if t['completed'] else "No"
+                    ]
+                    task_list_to_write.append(";".join(str_attrs))
+                task_file.write("\n".join(task_list_to_write))
+            print("Task successfully updated!")
+
+        elif user_choice == -1:
+            break
+        else:
+            print("Please make a valid selection")
+            continue
 
 
+#Report generator function
 
-#Function to edit tasks
-# def edit_tasks():
-#     """Takes the task as a dictionary from .txt file ready to edit """
+def generate_reports():
 
-#     task_complete = input("Is the task completed? (y/n): ")
-#     if task_complete == "y":
-#         selected_task[5] = True
+    #---task_overview section of function---
 
+    #define global variables
+    completed_tasks = 0
+    incomplete_tasks = 0
+    overdue_tasks = 0
+
+    #opens and reads file for number of tasks
+    with open("tasks.txt", "r") as task_file:
+        number_tasks = len(task_file.readlines())
+
+    #iterates through tasks checking for completion
+    with open("tasks.txt", "r") as task_file:
+        for line in task_file:
+            if "Yes" in line:
+                completed_tasks += 1
+            else:
+                incomplete_tasks += 1
+
+    #check for overdue tasks
+    with open("tasks.txt", 'r') as task_file:
+        current_date = datetime.today()
+        for line in task_file:
+            temp_list = line.split(";")
+            due_time = datetime.strptime(temp_list[3], DATETIME_STRING_FORMAT)
+            if current_date > due_time and "No" in line:
+                overdue_tasks += 1
+
+    #calculate % overdue
+    with open('tasks.txt', 'r') as task_file:
+        percentage_overdue = int((overdue_tasks / len(task_file.readlines()) * 100))
+
+    #calculate % incomplete
+    with open('tasks.txt', 'r') as task_file:
+        percentage_incomplete = int((incomplete_tasks / len(task_file.readlines()) * 100))
+
+  
+    #write to the the task_overview file
+    with open("task_overview.txt", "w") as task_overview:
+        task_overview.writelines(f"The total number of tasks is: {number_tasks}\n")
+        task_overview.writelines(f"The number of completed tasks is: {completed_tasks}\n")
+        task_overview.writelines(f"The numer of incomplete tasks is: {incomplete_tasks}\n")
+        task_overview.writelines(f"The number of tasks that are overdue is: {overdue_tasks}\n")
+        task_overview.writelines(f"The percentage of tasks overdue is: {percentage_overdue}%\n")
+        task_overview.writelines(f"The percentage of tasks that are incomplete is: {percentage_incomplete}%\n")
+
+
+    #---user_overview section---
+    
     
 
 #====Login Section====
@@ -242,6 +329,7 @@ r - Registering a user
 a - Adding a task
 va - View all tasks
 vm - View my task
+gr - generate reports
 ds - Display statistics
 e - Exit
 : ''').lower()
@@ -260,6 +348,8 @@ e - Exit
     elif menu == 'vm':
         view_mine()
                 
+    elif menu == 'gr':
+        generate_reports()
     
     elif menu == 'ds' and curr_user == 'admin': 
         '''If the user is an admin they can display statistics about number of users
