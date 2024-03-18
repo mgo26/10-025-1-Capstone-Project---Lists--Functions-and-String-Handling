@@ -2,4 +2,4 @@ admin;Add functionality to task manager;Add additional options and refactor the 
 David;Clean up;Please clean up mess;2025-11-26;2024-02-06;Yes
 alan;Commit changes;Commit;2024-12-25;2024-02-12;No
 alan;Debug program;Keep debuggin;2024-11-26;2024-02-12;No
-admin;Check tasks;Check over others work;2024-11-26;2024-02-12;No
+admin;Check tasks;Check over others work;2024-11-26;2024-02-12;Yes

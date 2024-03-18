@@ -1,0 +1,23 @@
+The total number of users is: 4
+The total number of tasks in the database is: 5
+
+User: admin
+Total Tasks: 2
+Percentage Completed: 0%
+Percentage To Be Completed: 100%
+Percentage Overdue: 0%
+
+
+User: David
+Total Tasks: 1
+Percentage Completed: 100%
+Percentage To Be Completed: 0%
+Percentage Overdue: 0%
+
+
+User: alan
+Total Tasks: 2
+Percentage Completed: 0%
+Percentage To Be Completed: 100%
+Percentage Overdue: 0%
+
